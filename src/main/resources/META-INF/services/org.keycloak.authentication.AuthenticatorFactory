@@ -1,0 +1,6 @@
+com.sanserve.keycloak.authenticators.smsotp.SMSOTPAuthenticatorFactory
+com.sanserve.keycloak.authenticators.emailotp.EmailOTPAuthenticatorFactory
+com.sanserve.keycloak.authenticators.emailinput.EmailInputAuthenticatorFactory
+com.sanserve.keycloak.authenticators.phoneinput.PhoneNumberInputAuthenticatorFactory
+com.sanserve.keycloak.authenticators.condition.OtpMethodConditionAuthenticatorFactory
+com.sanserve.keycloak.authenticators.chooser.ChooseMethodAuthenticatorFactory
