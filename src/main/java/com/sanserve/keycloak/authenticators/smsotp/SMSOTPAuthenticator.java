@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.AuthenticationFlowError;
 import org.keycloak.authentication.Authenticator;
+import org.keycloak.forms.login.LoginFormsProvider;
 import org.keycloak.models.AuthenticatorConfigModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
@@ -45,7 +46,7 @@ public class SMSOTPAuthenticator implements Authenticator {
     KeycloakSession session = context.getSession();
     UserModel user = context.getUser();
 
-    int ttl = Integer.parseInt(config.getConfig().get(SMSOTPAuthenticatorFactory.CONFIG_PROP_TTL));
+    int ttl = Integer.parseInt(config.getConfig().getOrDefault(SMSOTPAuthenticatorFactory.CONFIG_PROP_TTL,"300"));
     String smsBaseUrl = config.getConfig().get(SMSOTPAuthenticatorFactory.CONFIG_PROP_BSNL_BASE_URL);
     String serviceId =  config.getConfig().get(SMSOTPAuthenticatorFactory.CONFIG_PROP_BSNL_SERVICE_ID);
     String loginId = config.getConfig().get(SMSOTPAuthenticatorFactory.CONFIG_PROP_BSNL_LOGIN_ID);
@@ -86,8 +87,14 @@ public class SMSOTPAuthenticator implements Authenticator {
         this.smsService= new SMSService(smsBaseUrl,serviceId,loginId,passcode,header,entity,template,appName);
         smsService.sendOTP(phoneNumber,code);
       }
-      Response response = context.form().setAttribute("realm", context.getRealm())
+      LoginFormsProvider formsProvider = context.form();
+        if(isSimulation){
+          formsProvider.setAttribute("simulationOTP", code);
+        }
+      Response response = formsProvider.setAttribute("realm", context.getRealm())
                 .setAttribute("inputValue",phoneNumber)
+                .setAttribute("ttl", Math.floorDiv(ttl, 60))
+                .setAttribute("isSimulation", isSimulation)
               .createForm(OTP_FORM);
       context.challenge(response);
     } catch (Exception e) {

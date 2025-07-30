@@ -10,6 +10,7 @@ import org.keycloak.authentication.AuthenticationFlowError;
 import org.keycloak.authentication.Authenticator;
 import org.keycloak.common.util.SecretGenerator;
 import org.keycloak.email.EmailTemplateProvider;
+import org.keycloak.forms.login.LoginFormsProvider;
 import org.keycloak.models.AuthenticatorConfigModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
@@ -31,9 +32,7 @@ public class EmailOTPAuthenticator implements Authenticator {
   private static final String AUTH_NOTE_REMAINING_RETRIES = "remainingRetries";
   private static final Logger logger = Logger.getLogger(EmailOTPAuthenticator.class);
 
-  private static final String ALPHA_UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  private static final String ALPHA_LOWER = "abcdefghijklmnopqrstuvwxyz";
-  private static final String NUM = "0123456789";
+
 
   @Override
   public void authenticate(AuthenticationFlowContext context) {
@@ -42,7 +41,7 @@ public class EmailOTPAuthenticator implements Authenticator {
     String emailId = context.getAuthenticationSession().getAuthNote(EMAIL_ID_NOTE);
 
 
-    int ttl = Integer.parseInt(config.getConfig().get(EmailOTPAuthenticatorFactory.CONFIG_PROP_TTL));
+    int ttl = Integer.parseInt(config.getConfig().getOrDefault(EmailOTPAuthenticatorFactory.CONFIG_PROP_TTL,"300"));
     String emailSubject = config.getConfig().get(EmailOTPAuthenticatorFactory.CONFIG_PROP_EMAIL_SUBJECT);
     Boolean isSimulation = Boolean.parseBoolean(
         config.getConfig()
@@ -85,9 +84,17 @@ public class EmailOTPAuthenticator implements Authenticator {
                 attributes);
       }
 
-      context.challenge(context.form().setAttribute("realm", context.getRealm())
+
+      LoginFormsProvider formsProvider = context.form();
+      if(isSimulation){
+        formsProvider.setAttribute("simulationOTP", code);
+      }
+      Response response = formsProvider.setAttribute("realm", context.getRealm())
               .setAttribute("inputValue",emailId)
-              .createForm(OTP_FORM));
+              .setAttribute("ttl", Math.floorDiv(ttl, 60))
+              .setAttribute("isSimulation", isSimulation)
+              .createForm(OTP_FORM);
+      context.challenge(response);
     } catch (Exception e) {
       logger.error("An error occurred when attempting to email an TOTP auth:", e);
       context.failureChallenge(AuthenticationFlowError.INTERNAL_ERROR,

@@ -16,14 +16,8 @@ public class EmailOTPAuthenticatorFactory implements AuthenticatorFactory {
   public static final String CONFIG_PROP_TTL = "ttl";
   public static final String CONFIG_PROP_EMAIL_SUBJECT = "emailSubject";
   public static final String CONFIG_PROP_SIMULATION = "simulation";
-  public static final String CONFIG_PROP_ALLOW_UPPERCASE = "allowUppercase";
-  public static final String CONFIG_PROP_ALLOW_LOWERCASE = "allowLowercase";
-  public static final String CONFIG_PROP_ALLOW_NUMBERS = "allowNumbers";
+
   public static final String CONFIG_PROP_MAX_RETRIES = "maxRetries";
-  public static final String CONFIG_PROP_SMTP_HOST = "smtpHost";
-  public static final String CONFIG_PROP_SMTP_PORT = "smtpPort";
-  public static final String CONFIG_PROP_SMTP_USER = "smtpUser";
-  public static final String CONFIG_PROP_SMTP_PASS = "smtpPass";
 
   @Override
   public String getId() {
@@ -79,13 +73,8 @@ public class EmailOTPAuthenticatorFactory implements AuthenticatorFactory {
             "The time to live in seconds for the code to be valid.", ProviderConfigProperty.STRING_TYPE, "300"),
         new ProviderConfigProperty(CONFIG_PROP_MAX_RETRIES, "Max Retries",
             "This is the maximum number of retries, after the 1st attempt, before failing.", ProviderConfigProperty.STRING_TYPE,
-            2),
-        new ProviderConfigProperty(CONFIG_PROP_ALLOW_UPPERCASE, "Allow Uppercase",
-            "Should the TOTP code contain uppercase letters?", ProviderConfigProperty.BOOLEAN_TYPE, true),
-        new ProviderConfigProperty(CONFIG_PROP_ALLOW_LOWERCASE, "Allow Lowercase",
-            "Should the TOTP code contain lowercase letters?", ProviderConfigProperty.BOOLEAN_TYPE, true),
-        new ProviderConfigProperty(CONFIG_PROP_ALLOW_NUMBERS, "Allow Numbers", "Should the TOTP code contain numbers?",
-            ProviderConfigProperty.BOOLEAN_TYPE, true));
+            5));
+
   }
 
   @Override

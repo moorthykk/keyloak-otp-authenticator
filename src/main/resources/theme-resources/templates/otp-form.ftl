@@ -89,6 +89,11 @@
         <#if displayGoBack??>
            <button name="back" value="true">Change or correct the input ${kcSanitize(inputValue)?no_esc}</button>
         </#if>
+        <#if isSimulation>
+          <div style="text-align: center;">
+                          ${kcSanitize(msg("otpSimulationModeDisplay",realmName, simulationOTP))?no_esc}
+           </div>
+        </#if>
 
 
 
