@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Enter OTP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -64,6 +65,41 @@
             color: red;
             margin-bottom: 1rem;
         }
+        /* Responsive tweaks for small screens */
+            @media (max-width: 480px) {
+              .form-container {
+                padding: 1.5rem 1rem;
+                width: 100%;
+              }
+              .otp-inputs {
+                    display: flex;
+                    justify-content: space-between;
+                    gap: 0.2rem;
+                    margin-bottom: 1.5rem;
+                }
+
+                .otp-inputs input {
+                    width: 17%;
+                    height: 44px;
+                    font-size: 16px;
+
+                }
+
+              h2 {
+                font-size: 1.3rem;
+                margin-bottom: 1rem;
+              }
+
+              label {
+                font-size: 0.95rem;
+              }
+
+              input[type="text"],
+              input[type="submit"] {
+                font-size: 0.95rem;
+                padding: 0.6rem;
+              }
+            }
     </style>
 </head>
 <body>
